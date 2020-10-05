@@ -14,6 +14,15 @@ class TweetCellTableViewCell: UITableViewCell {
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var tweetContent: UILabel!
     
+    // add time label? lecture 2 13 min
+    
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var favButton: UIButton!
+    
+    
+    var favorited:Bool = false
+    var tweetId:Int = -1
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -24,5 +33,38 @@ class TweetCellTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    @IBAction func favoriteTweet(_ sender: Any) {
+        let toBeFavorited = !favorited
+        if (toBeFavorited){
+            TwitterAPICaller.client?.favoriteTweet(tweetId: tweetId, success: {
+                self.setFavorite(true)
+            }, failure: { (Error) in
+                print("Favorite did not succeed: \(Error)")
+            })
+        }
+        else {
+            TwitterAPICaller.client?.unfavoriteTweet(tweetId: tweetId, success: {
+                self.setFavorite(false)
+            }, failure: { (Error) in
+                print("Unfavorite did not succeed: \(Error)")
+            })
+        }
+    }
+    
+    func setFavorite(_ isfavorited: Bool) {
+        favorited = isfavorited
+        if (favorited){
+            favButton.setImage(UIImage(named:"favor-icon-red"), for: UIControl.State.normal)
+        }
+        else {
+            favButton.setImage(UIImage(named:"favor-icon"), for: UIControl.State.normal)
+        }
+    }
+    
+    @IBAction func retweet(_ sender: Any) {
+        
+    }
+    
 
 }
